@@ -1,0 +1,34 @@
+_pyname=ailment
+pkgname=python-${_pyname}
+pkgver=9.2.134
+pkgrel=1
+pkgdesc='The angr intermediate language'
+url='https://github.com/angr/ailment'
+license=('custom:BSD2')
+arch=('any')
+depends=('python' 'python-claripy' 'python-pyvex' 'python-pypcode')
+makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
+checkdepends=('python-pytest' 'python-archinfo')
+source=("${url}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+sha512sums=('5845ce5b4a93f6216a709849c748e6095d0ce999d0f47aeaf96aeadbea6c65165f56bccd00c570ebf258fa512eeadf8772dfd20089a390f5dd6240fa433570a5')
+b2sums=('f449b8ab9c2c6b0b48f0a232707c90e1689da7c58d597f85215f5ea8814aefa83d94768c705c91bd1d2180695768aa342a04d18334d8a3f9b39339f84a5f76dc')
+
+build() {
+  cd ${_pyname}-${pkgver}
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd ${_pyname}-${pkgver}
+  # TODO: needed for angr (hard dep)
+  # PYTHONPATH=build/lib pytest
+}
+
+package() {
+  cd ${_pyname}-${pkgver}
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -Dm 644 README.md -t "${pkgdir}/usr/share/doc/${pkgname}"
+}
+
+# vim: ts=2 sw=2 et:
